@@ -1,0 +1,5 @@
+{
+  "name": "بنك الأسئلة الذكي (Smart Questions Bank)",
+  "description": "An educational platform for Grade 12 students and teachers to create, manage, and take interactive quizzes. It features automated question generation from educational materials and full Arabic language support.",
+  "requestFramePermissions": []
+}
