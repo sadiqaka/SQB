@@ -2,23 +2,11 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Question, QuestionType } from '../types';
 
-let ai: GoogleGenAI;
-
-export const setApiKey = (key: string) => {
-    ai = new GoogleGenAI({ apiKey: key });
-};
-
-const getAiInstance = () => {
-    if (!ai) {
-        // Fallback for initial load or if key is not set yet.
-        // The App component should prevent calls before the key is set.
-        console.warn("Gemini AI client not initialized. Please set API key.");
-        // A temporary key to avoid crashing, but calls will fail.
-        ai = new GoogleGenAI({ apiKey: "invalid_key_placeholder" });
-    }
-    return ai;
+if (!process.env.API_KEY) {
+    throw new Error("API_KEY environment variable not set. Please configure it in your deployment environment.");
 }
 
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const getQuestionTypeDescription = (type: QuestionType) => {
     switch (type) {
@@ -107,8 +95,7 @@ ${text}
 `;
 
     try {
-        const aiInstance = getAiInstance();
-        const response = await aiInstance.models.generateContent({
+        const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {

@@ -1,8 +1,9 @@
+
 # بنك الأسئلة الذكي (Smart Questions Bank)
 
 An advanced educational platform designed for Grade 12 students and teachers in the Arabic-speaking world. This application leverages the power of the Google Gemini API to automatically generate a variety of interactive quiz questions from any educational text.
 
-**[➡️ View Live Demo](https://<Your-GitHub-Username>.github.io/<your-repository-name>/)** *(Replace this with your actual GitHub Pages link after deployment)*
+**[➡️ View Live Demo](https://smart-questions-bank-974231719673.us-west1.run.app)**
 
 ---
 
@@ -12,10 +13,11 @@ An advanced educational platform designed for Grade 12 students and teachers in 
 - **Multiple Question Types**: Supports multiple-choice, true/false, fill-in-the-blank, matching, and cause-and-effect questions.
 - **Editable Questions**: Review and edit generated questions to perfectly match your curriculum before starting a quiz.
 - **Interactive Quiz Mode**: Take quizzes in a clean, user-friendly interface with progress tracking.
-- **Instant Results & Review**: Get immediate feedback with a detailed score report, visual chart, and a question-by-question review with explanations.
+- **Instant Results & Review**: Get immediate feedback with a detailed score report, a visual chart, and a question-by-question review with explanations.
 - **Persistent Question Bank**: Save your favorite questions to a personal "bank" using the browser's local storage to build a custom quiz library.
 - **Responsive Design**: Fully functional and beautifully designed for desktops, tablets, and mobile devices.
 - **Full Arabic Language Support**: The UI, generated content, and overall experience are tailored for Arabic-speaking users.
+- **Secure by Design**: The API key is managed securely on the server, ensuring it's never exposed to end-users.
 
 ## 💻 Technologies Used
 
@@ -24,6 +26,7 @@ An advanced educational platform designed for Grade 12 students and teachers in 
 - **Styling**: Tailwind CSS (via CDN for rapid, build-less development)
 - **Charts**: Recharts (for the results pie chart)
 - **Storage**: Browser Local Storage (for the persistent question bank)
+- **Hosting**: Google Cloud Run
 - **Architecture**: This is a zero-build, static single-page application (SPA). It runs entirely in the browser without needing a bundler like Vite or Webpack.
 
 ---
@@ -36,25 +39,26 @@ This project is set up to run without any build process.
 
 - A modern web browser (like Chrome, Firefox, or Edge).
 - A Google Gemini API Key. You can get one from [Google AI Studio](https://aistudio.google.com/app/apikey).
+- A local web server for development.
 
 ### Running Locally
 
-1.  **Clone or Download the Repository**:
+1.  **Clone the Repository**:
     ```bash
     git clone https://github.com/<Your-GitHub-Username>/<your-repository-name>.git
     ```
-2.  **Set Up the API Key**:
-    Open the file `services/geminiService.ts`. You need to replace the placeholder for the API key.
+2.  **Set Up the API Key for Local Development**:
+    To run the app locally, you will need to simulate the environment variable. The easiest way is to temporarily modify `services/geminiService.ts`. 
     
     Find this line:
     ```typescript
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     ```
-    And replace it with your actual key:
+    And temporarily replace it with your actual key for local testing:
     ```typescript
     const ai = new GoogleGenAI({ apiKey: "YOUR_GEMINI_API_KEY_HERE" });
     ```
-    *Note: This method is for local testing only. Exposing your API key in a public repository is not secure.*
+    **Important**: Do not commit this change to your repository. This is for local development only.
 
 3.  **Serve the Files**:
     You cannot open `index.html` directly due to browser security policies (CORS). You need to serve it using a simple local server. If you have Python installed, you can run one of these commands from the project's root directory:
@@ -69,9 +73,14 @@ This project is set up to run without any build process.
 
 ## 🌐 Deployment
 
-This application is perfectly suited for static site hosting services. For a free and easy setup, you can use **GitHub Pages**.
+This application is configured for secure deployment on server environments like **Google Cloud Run**.
 
-I have provided a detailed, step-by-step guide on how to deploy this application to your GitHub account in our conversation.
+To deploy, ensure you set the following environment variable in your service's configuration:
+
+-   **Name**: `API_KEY`
+-   **Value**: `YOUR_GEMINI_API_KEY_HERE`
+
+This method ensures your API key is never exposed in the client-side code, which is critical for security.
 
 ## 🌱 Future Development & Next Steps
 
