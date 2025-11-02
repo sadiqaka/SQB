@@ -1,7 +1,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { Question, QuestionType, QuizResult } from './types';
-import { generateQuestionsFromText } from './services/geminiService';
+import { generateQuestionsFromText, setApiKey } from './services/geminiService';
 import { addQuestionsToBank } from './services/storageService';
 import Header from './components/Header';
 import QuestionGenerator from './components/QuestionGenerator';
@@ -10,15 +10,31 @@ import QuizTaker from './components/QuizTaker';
 import QuizResults from './components/QuizResults';
 import SavedQuestions from './components/SavedQuestions';
 import Spinner from './components/Spinner';
+import ApiKeyScreen from './components/ApiKeyScreen';
 import { sampleText } from './constants';
 
 type AppState = 'IDLE' | 'GENERATING' | 'QUIZ_READY' | 'TAKING_QUIZ' | 'SHOWING_RESULTS' | 'VIEWING_BANK';
 
 const App: React.FC = () => {
+  const [apiKey, setApiKeyState] = useState<string | null>(null);
   const [appState, setAppState] = useState<AppState>('IDLE');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const savedKey = localStorage.getItem('gemini_api_key');
+    if (savedKey) {
+      setApiKey(savedKey);
+      setApiKeyState(savedKey);
+    }
+  }, []);
+
+  const handleApiKeySubmit = (key: string) => {
+    setApiKey(key);
+    setApiKeyState(key);
+    localStorage.setItem('gemini_api_key', key);
+  };
 
   const handleGenerateQuestions = useCallback(async (text: string, type: QuestionType, count: number) => {
     setAppState('GENERATING');
@@ -29,7 +45,7 @@ const App: React.FC = () => {
       setQuestions(generatedQuestions);
       setAppState('QUIZ_READY');
     } catch (err) {
-      setError('حدث خطأ أثناء إنشاء الأسئلة. يرجى المحاولة مرة أخرى.');
+      setError('حدث خطأ أثناء إنشاء الأسئلة. قد يكون مفتاح API غير صالح أو أن الخدمة تواجه مشكلة. يرجى المحاولة مرة أخرى.');
       console.error(err);
       setAppState('IDLE');
     }
@@ -94,6 +110,10 @@ const App: React.FC = () => {
         return <QuestionGenerator onGenerate={handleGenerateQuestions} initialText={sampleText} error={error} />;
     }
   };
+  
+  if (!apiKey) {
+    return <ApiKeyScreen onSubmit={handleApiKeySubmit} />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-800">
